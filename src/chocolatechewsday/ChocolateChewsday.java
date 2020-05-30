@@ -6,6 +6,7 @@
 package chocolatechewsday;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 /**
@@ -32,26 +33,33 @@ public class ChocolateChewsday {
         Score maxScore=new Score(0,0,0);
         ArrayList<Chocolate> chocoList=new ArrayList();
         String name=sc.nextLine();
+        
         for (int i=0;i<chocolates;i++) {
             Chocolate chocolate=readInChocolate();
             String tmp=name;
             name=chocolate.getName();
             chocolate.setName(tmp);
             
-            int compare=chocolate.getScore().compareTo(maxScore);
-            if (compare>0) {
-                maxScore=chocolate.getScore();
-                chocoList.clear();
-                chocoList.add(chocolate);
-            } else if (compare==0) {
-                chocoList.add(chocolate);
+            chocoList.add(chocolate);
+        }
+        
+        Collections.sort(chocoList);
+        
+        for (int i=chocoList.size()-1;i>=0;i--) {
+            Score score=new Score(0,0,0);
+            if (i==chocoList.size()-1) {
+                System.out.print(chocoList.get(i).getName());
+                score=chocoList.get(i).getScore();
+            } else {
+                if (chocoList.get(i).getScore().compareTo(score)==0) {
+                    System.out.print(","+chocoList.get(i).getName());
+                } else {
+                    break;
+                }
             }
         }
-        for (int i=0;i<chocoList.size();i++) {
-            if (i!=0) System.out.print(",");
-            System.out.print(chocoList.get(i).getName());
-        }
         System.out.println();
+        
     }
 
     private static Chocolate readInChocolate() {
@@ -94,7 +102,7 @@ class Chocolate {
     }
 }
 
-class Score implements Comparable {
+class Score implements Comparable<Score> {
     private int p=0;
     private int f=0;
     private int g=0;
@@ -112,8 +120,8 @@ class Score implements Comparable {
     }
 
     @Override
-    public int compareTo(Object o) {
-        Score score=(Score)o;
+    public int compareTo(Score score) {
+        
         int t1=this.p+this.f+this.g;
         int t2=score.p+score.g+score.f;
         if (t1>t2) return 1;
